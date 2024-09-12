@@ -7,7 +7,5 @@ app
     port: 3333,
   })
   .then(() => {
-    console.log('DATABASE_URL:', process.env.DATABASE_URL);
-
     console.log("Http server running");
   });
