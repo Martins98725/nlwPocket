@@ -1,10 +1,7 @@
 import dayjs from "dayjs";
-import weekOfYear from "dayjs/plugin/weekOfYear";
 import { db } from "../db";
 import { goalCompletions, goals } from "../db/schema";
-import { and, count, gte, lte, sql } from "drizzle-orm";
-
-dayjs.extend(weekOfYear);
+import { and, count, eq, gte, lte, sql } from "drizzle-orm";
 
 export async function getWeekPendingGoals() {
   const lastDayOfWeek = dayjs().endOf("week").toDate();
@@ -27,7 +24,7 @@ export async function getWeekPendingGoals() {
     db
       .select({
         goalId: goalCompletions.goalId,
-        completionCount: count(goalCompletions.id),
+        completionCount: count(goalCompletions.id).as("completionCount"),
       })
       .from(goalCompletions)
       .where(
@@ -41,10 +38,19 @@ export async function getWeekPendingGoals() {
 
   const pedingGoals = await db
     .with(goalCreatedUpToWeek, goalsCompletionCounts)
-    .select()
-    .from(goalCreatedUpToWeek);
+    .select({
+      id: goalCreatedUpToWeek.id,
+      title: goalCreatedUpToWeek.title,
+      desiredWeeklyFrequency: goalCreatedUpToWeek.desiredWeeklyFrequency,
+      completionCount: sql`
+        coalesce(${goalsCompletionCounts.completionCount}, 0)
+      `.mapWith(Number),
+    })
+    .from(goalCreatedUpToWeek)
+    .leftJoin(
+      goalsCompletionCounts,
+      eq(goalsCompletionCounts.goalId, goalCreatedUpToWeek.id)
+    );
 
-  return {
-    pedingGoals,
-  };
+  return { pedingGoals };
 }

@@ -7,19 +7,36 @@ import {
 import { createGoal } from "../functions/create-goal";
 import z from "zod";
 import { getWeekPendingGoals } from "../functions/get-week-pending-goals";
+import { createGoalCompletions } from "../functions/create-goal-completion";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
-
-
 app.get("/pending-goals", async () => {
   const { pedingGoals } = await getWeekPendingGoals();
 
-  return{ pedingGoals }
-})
+  return { pedingGoals };
+});
+
+app.post(
+  "/completions",
+  {
+    schema: {
+      body: z.object({
+        goalId: z.string(),
+      }),
+    },
+  },
+  async (request) => {
+    const { goalId } = request.body;
+    const result = await createGoalCompletions({
+      goalId,
+    });
+  }
+);
+
 app.post(
   "/goals",
   {
