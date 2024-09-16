@@ -6,7 +6,6 @@ import { and, count, eq, gte, lte, sql } from "drizzle-orm";
 export async function getWeekPendingGoals() {
   const lastDayOfWeek = dayjs().endOf("week").toDate();
   const firstDayOfWeek = dayjs().startOf("week").toDate();
-  //const currentweek = dayjs().week();
 
   const goalCreatedUpToWeek = db.$with("goals_created_up_week").as(
     db

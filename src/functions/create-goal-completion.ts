@@ -49,14 +49,12 @@ export async function createGoalCompletions({
     throw new Error("Goal already completed this weak");
   }
 
-  const insertResulte = await db
+  const [goalCompletion] = await db
     .insert(goalCompletions)
     .values({
       goalId,
     })
     .returning();
-
-  const goalCompletion = result[0];
 
   return {
     goalCompletion,
