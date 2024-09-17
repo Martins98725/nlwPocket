@@ -67,15 +67,13 @@ export function App() {
                 <Label htmlFor="title">Quantas vezes na semana?</Label>
                 <RadioGroup>
                   <RadioGroupItem value="1">
-                    <RadioGroupIndicator/>
+                    <RadioGroupIndicator />
                     <span className="text-zinc-300 text-sm font-medium leading-none">
                       1x na semana
                     </span>
                     <span className="text-lg leading-none">🥱</span>
                   </RadioGroupItem>
-                </RadioGroup>
 
-                <RadioGroup>
                   <RadioGroupItem value="2">
                     <RadioGroupIndicator />
                     <span className="text-zinc-300 text-sm font-medium leading-none">
@@ -83,9 +81,7 @@ export function App() {
                     </span>
                     <span className="text-lg leading-none">🥱</span>
                   </RadioGroupItem>
-                </RadioGroup>
 
-                <RadioGroup>
                   <RadioGroupItem value="3">
                     <RadioGroupIndicator />
                     <span className="text-zinc-300 text-sm font-medium leading-none">
