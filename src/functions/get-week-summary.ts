@@ -57,6 +57,12 @@ export async function getWeekSummary() {
       .groupBy(goalsCompletedWeek.completedAtDate)
   );
 
+  type GoalsPerDay = Record<string, {
+    id: string,
+    title: string, 
+    completedAt: string
+  }[]>
+
   const result = await db
     .with(goalCreatedUpToWeek, goalsCompletedWeek, goalsCompletedByWeekDay)
     .select({
@@ -67,7 +73,7 @@ export async function getWeekSummary() {
         sql`(select sum(${goalCreatedUpToWeek.desiredWeeklyFrequency}) from ${goalCreatedUpToWeek})`.mapWith(
           Number
         ),
-      goalsPerDate: sql`    
+      goalsPerDay: sql <GoalsPerDay>`    
         JSON_OBJECT_AGG(
             ${goalsCompletedByWeekDay.completedAtDate},
             ${goalsCompletedByWeekDay.completions}
@@ -77,6 +83,6 @@ export async function getWeekSummary() {
     .from(goalsCompletedByWeekDay);
 
   return {
-    summary: result,
+    summary: result[0],
   };
 }
